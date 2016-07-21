@@ -29,6 +29,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.arejaysmith.telephotos.MainActivity"/>
         </activity>
+        <activity
+            android:name=".PhotosListActivity"
+            android:label="@string/title_activity_photos_list"
+            android:parentActivityName=".AlbumActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.arejaysmith.telephotos.AlbumActivity"/>
+        </activity>
     </application>
 
 </manifest>

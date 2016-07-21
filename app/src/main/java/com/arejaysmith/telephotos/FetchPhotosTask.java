@@ -1,5 +1,8 @@
 package com.arejaysmith.telephotos;
 
+/**
+ * Created by Urge_Smith on 7/21/16.
+ */
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,42 +23,44 @@ import java.util.List;
 /**
  * Created by Urge_Smith on 7/20/16.
  */
-public class FetchAlbumsTask extends AsyncTask<String, Void, ArrayList<Album>> {
+public class FetchPhotosTask extends AsyncTask<String, Void, ArrayList<Photo>> {
 
-    private final String LOG_TAG = FetchAlbumsTask.class.getSimpleName();
+    private final String LOG_TAG = FetchPhotosTask.class.getSimpleName();
 
-    final AlbumActivity outer;
+    final PhotosListActivity outer;
 
     //import class to pass list back to main activity
-    FetchAlbumsTask(AlbumActivity outer) {
+    FetchPhotosTask(PhotosListActivity outer) {
 
         this.outer = outer;
     }
 
-    public ArrayList<Album> parseAlbumsObject(String jsonString) throws JSONException {
+    public ArrayList<Photo> parsePhotosObject(String jsonString) throws JSONException {
 
-        ArrayList<Album> albumList = new ArrayList<>();
+        ArrayList<Photo> photoList = new ArrayList<>();
 
-        JSONArray albumJsonArr = new JSONArray(jsonString);
+        JSONArray photoJsonArr = new JSONArray(jsonString);
 
-        for (int i = 0; i < albumJsonArr.length(); i++){
+        for (int i = 0; i < photoJsonArr.length(); i++){
 
-            JSONObject currentAlbum = albumJsonArr.getJSONObject(i);
+            JSONObject currentPhoto = photoJsonArr.getJSONObject(i);
 
-            Album album = new Album();
+            Photo photo = new Photo();
 
-            album.setUserId(currentAlbum.getInt("userId"));
-            album.setId(currentAlbum.getInt("id"));
-            album.setTitle(currentAlbum.getString("title"));
+            photo.setAlbumId(currentPhoto.getInt("albumId"));
+            photo.setId(currentPhoto.getInt("id"));
+            photo.setTitle(currentPhoto.getString("title"));
+            photo.setUrl(currentPhoto.getString("url"));
+            photo.setThumbnailUrl(currentPhoto.getString("thumbnailUrl"));
 
-            albumList.add(album);
+            photoList.add(photo);
         }
 
-        return albumList;
+        return photoList;
     }
 
     @Override
-    protected ArrayList<Album> doInBackground(String... params) {
+    protected ArrayList<Photo> doInBackground(String... params) {
 
         //Holds the connection and buffer
         HttpURLConnection urlConnection = null;
@@ -122,12 +127,11 @@ public class FetchAlbumsTask extends AsyncTask<String, Void, ArrayList<Album>> {
                     Log.e(LOG_TAG, "Error closing stream", e);
                 }
             }
-
         }
 
         try{
 
-            return parseAlbumsObject(jsonStr);
+            return parsePhotosObject(jsonStr);
 
         }catch(JSONException e) {
 
@@ -138,11 +142,11 @@ public class FetchAlbumsTask extends AsyncTask<String, Void, ArrayList<Album>> {
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Album> albumData) {
-        super.onPostExecute(albumData);
+    protected void onPostExecute(ArrayList<Photo> photoData) {
+        super.onPostExecute(photoData);
 
         try{
-            outer.getAlbumData(albumData);
+            outer.getPhotoData(photoData);
         }catch (Exception e){
 
             Log.e(LOG_TAG, "Can't pass data");
