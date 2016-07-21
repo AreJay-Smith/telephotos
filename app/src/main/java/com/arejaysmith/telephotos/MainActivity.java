@@ -1,6 +1,7 @@
 package com.arejaysmith.telephotos;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,13 +17,14 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<User> userDataList;
+    ArrayList<User> userDataList = new ArrayList<>();
     private RecyclerView mUserRecyclerView;
     private UserAdapter mUserAdapter;
     Context context;
@@ -33,12 +35,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Telephoto Users");
 
         FetchUsersTask fetchUsersTask = new FetchUsersTask(this);
         fetchUsersTask.execute("users");
 
         mUserRecyclerView = (RecyclerView) findViewById(R.id.user_recycler_view);
+        mUserRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, mUserRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
 
+                        Context context = getApplicationContext();
+
+                        User selectedUser = userDataList.get(position);
+                        Intent albumIntent = new Intent(context, AlbumActivity.class);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putParcelable("user", selectedUser);
+                        albumIntent.putExtras(mBundle);
+                        startActivity(albumIntent);
+                    }
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
         mUserRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -47,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+
         return true;
     }
 
