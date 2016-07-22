@@ -72,11 +72,13 @@ public class PhotosListActivity extends AppCompatActivity {
     private class PhotoHolder extends RecyclerView.ViewHolder {
 
         private ImageView mPhotoView;
+        private TextView mPhotoTitle;
 
         public PhotoHolder(View itemView) {
             super(itemView);
 
             mPhotoView = (ImageView) itemView.findViewById(R.id.photo_view);
+            mPhotoTitle = (TextView) itemView.findViewById(R.id.photo_title);
         }
     }
 
@@ -102,10 +104,12 @@ public class PhotosListActivity extends AppCompatActivity {
 
             Photo photo = mPhotosArrayList.get(position);
 
+            // have to fix the urls to use https://
             String url = photo.getUrl();
             url = url.substring(7);
 
             Picasso.with(getApplicationContext()).load("https://" + url).into(holder.mPhotoView);
+            holder.mPhotoTitle.setText(photo.getTitle());
         }
 
         @Override

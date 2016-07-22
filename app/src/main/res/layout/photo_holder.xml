@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:id="@+id/photo_view"
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/relativelayout"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent" >
+
+    <ImageView
+        android:id="@+id/photo_view"
            android:orientation="vertical"
-           android:background="@color/colorPrimaryDark"
+           android:background="#fff"
            android:layout_width="match_parent"
            android:layout_height="match_parent"
            android:layout_gravity="center"
            android:scaleType="centerCrop"
            android:adjustViewBounds="true">
 
-</ImageView>
+    </ImageView>
 
+    <TextView
+    android:id="@+id/photo_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@id/photo_view"
+    android:layout_alignTop="@id/photo_view"
+    android:layout_alignRight="@id/photo_view"
+    android:layout_alignBottom="@id/photo_view"
+    android:layout_margin="1dp"
+    android:gravity="bottom"
+    android:text="Hello How are you this is an exetremely long sentence"
+    android:textColor="#ffffff"
+    android:lines="1"/>
 
+</RelativeLayout>
 
 
 
