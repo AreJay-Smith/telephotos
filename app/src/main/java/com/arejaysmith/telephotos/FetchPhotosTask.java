@@ -3,27 +3,38 @@ package com.arejaysmith.telephotos;
 /**
  * Created by Urge_Smith on 7/21/16.
  */
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Urge_Smith on 7/20/16.
  */
-public class FetchPhotosTask extends AsyncTask<String, Void, ArrayList<Photo>> {
+public class FetchPhotosTask extends AsyncTask<String, Void, Photo[]> {
 
     private final String LOG_TAG = FetchPhotosTask.class.getSimpleName();
 
@@ -60,11 +71,12 @@ public class FetchPhotosTask extends AsyncTask<String, Void, ArrayList<Photo>> {
     }
 
     @Override
-    protected ArrayList<Photo> doInBackground(String... params) {
+    protected Photo[] doInBackground(String... params) {
 
         //Holds the connection and buffer
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
+        Photo[] photoArray = new Photo[1];
 
         // Will contain the raw JSON response as a string.
         String jsonStr = null;
@@ -87,32 +99,20 @@ public class FetchPhotosTask extends AsyncTask<String, Void, ArrayList<Photo>> {
             urlConnection.connect();
 
             // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null){
+            InputStream inputStream = url.openStream();
 
-                Log.e(LOG_TAG, "Input Stream is empty");
-                return null;
-            }
+//            InputStream in = ...; // Obtained from HTTP client.
+            Reader jsonReader = new InputStreamReader(inputStream, "UTF-8");
+            Type collectionType = new TypeToken<Collection<Photo>>(){}.getType();
+            Collection<Photo> photo = new Gson().fromJson(jsonReader, collectionType);
 
-            reader = new BufferedReader(new InputStreamReader(inputStream));
+            Log.v("The size is", (Integer.toString(photo.size())));
+            photoArray = photo.toArray(new Photo[photo.size()]);
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    return null;
-                }
-
-                jsonStr = buffer.toString();
-
-            }
 
         }catch (Exception e){
 
-            Log.e(LOG_TAG, "JSON String: " + jsonStr);
+            Log.e(LOG_TAG, "JSON String: " + e.toString());
 
         }finally {
 
@@ -131,9 +131,9 @@ public class FetchPhotosTask extends AsyncTask<String, Void, ArrayList<Photo>> {
 
         try{
 
-            return parsePhotosObject(jsonStr);
+            return photoArray;
 
-        }catch(JSONException e) {
+        }catch(Exception e) {
 
             Log.e(LOG_TAG, e.getMessage());
         }
@@ -142,7 +142,7 @@ public class FetchPhotosTask extends AsyncTask<String, Void, ArrayList<Photo>> {
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Photo> photoData) {
+    protected void onPostExecute(Photo[] photoData) {
         super.onPostExecute(photoData);
 
         try{

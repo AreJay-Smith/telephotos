@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,18 +43,22 @@ public class PhotosListActivity extends AppCompatActivity {
         mPhotosRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
     }
 
-    public void getPhotoData(ArrayList<Photo> photoData) {
+    public void getPhotoData(Photo[] photoData) {
 
-        for (int i = 0; i < photoData.size(); i++) {
+        Album mAlbum = getIntent().getParcelableExtra("album");
 
-            Album mAlbum = getIntent().getParcelableExtra("album");
-            Photo currentPhoto = photoData.get(i);
+        for (int i = 0; i < photoData.length; i++) {
 
-            if (mAlbum.getId() == currentPhoto.getAlbumId()) {
+            Photo currentPhoto = photoData[i];
+
+            if (currentPhoto.getAlbumId() == mAlbum.getId()) {
 
                 mPhotosArrayList.add(currentPhoto);
             }
         }
+
+        Log.v("SizePhotosArray: ", Integer.toString(mPhotosArrayList.size()));
+
 
         setPhotoAdapter();
     }
@@ -97,7 +102,10 @@ public class PhotosListActivity extends AppCompatActivity {
 
             Photo photo = mPhotosArrayList.get(position);
 
-            Picasso.with(mContext).load(photo.getUrl()).into(holder.mPhotoView);
+            String url = photo.getUrl();
+            url = url.substring(7);
+
+            Picasso.with(getApplicationContext()).load("https://" + url).into(holder.mPhotoView);
         }
 
         @Override

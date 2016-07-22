@@ -1,14 +1,21 @@
 package com.arejaysmith.telephotos;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Urge_Smith on 7/21/16.
  */
 public class Photo {
 
+    @SerializedName("albumId")
     private int albumId;
+    @SerializedName("id")
     private int id;
+    @SerializedName("title")
     private String title;
+    @SerializedName("url")
     private String url;
+    @SerializedName("thumbnailUrl")
     private String thumbnailUrl;
 
     public int getAlbumId() {
