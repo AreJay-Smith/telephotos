@@ -1,65 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/relativelayout"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <ImageView
         android:id="@+id/photo_view"
-           android:orientation="vertical"
-           android:background="#fff"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:layout_gravity="center"
-           android:scaleType="centerCrop"
-           android:adjustViewBounds="true">
+       android:orientation="vertical"
+       android:background="#fff"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_gravity="center"
+       android:scaleType="centerCrop"
+       android:adjustViewBounds="true">
     </ImageView>
 
     <TextView
-    android:id="@+id/photo_title"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@id/photo_view"
-    android:layout_alignTop="@id/photo_view"
-    android:layout_alignRight="@id/photo_view"
-    android:layout_alignBottom="@id/photo_view"
-    android:layout_margin="1dp"
-    android:gravity="bottom"
-    android:text="Hello How are you this is an exetremely long sentence"
-    android:textColor="#ffffff"
-    android:lines="1"/>
+        android:id="@+id/photo_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/photo_view"
+        android:layout_alignTop="@id/photo_view"
+        android:layout_alignRight="@id/photo_view"
+        android:layout_alignBottom="@id/photo_view"
+        android:layout_margin="1dp"
+        android:gravity="bottom"
+        android:textColor="#ffffff"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
 </RelativeLayout>
-
-
-
-
-
-<!--<RelativeLayout-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/relativelayout"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="fill_parent" >-->
-
-    <!--<ImageView-->
-        <!--android:id="@+id/photo_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:adjustViewBounds="true"-->
-        <!--android:scaleType="centerCrop"/>-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/image_title"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignLeft="@id/photo_view"-->
-        <!--android:layout_alignTop="@id/photo_view"-->
-        <!--android:layout_alignRight="@id/photo_view"-->
-        <!--android:layout_alignBottom="@id/photo_view"-->
-        <!--android:layout_margin="1dp"-->
-        <!--android:gravity="center"-->
-        <!--android:text="Hello"-->
-        <!--android:textColor="#000000" />-->
-
-<!--</RelativeLayout>-->

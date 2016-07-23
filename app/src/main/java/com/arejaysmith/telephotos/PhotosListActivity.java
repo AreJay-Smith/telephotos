@@ -28,6 +28,8 @@ public class PhotosListActivity extends AppCompatActivity {
     private RecyclerView mPhotosRecyclerView;
     private Context mContext;
     private PhotoAdapter mPhotoAdapter;
+    private int mSavedAlbumId;
+    private String KEY_PHOTO_LIST = "photo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +37,20 @@ public class PhotosListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photos_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Photos");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        Album mAlbum = getIntent().getParcelableExtra("album");
+        setTitle(mAlbum.getTitle());
+        if(savedInstanceState != null) {
 
-        FetchPhotosTask fetchPhotosTask = new FetchPhotosTask(this);
-        fetchPhotosTask.execute("photos");
+            // If activity was destroyed, check to see if array was already made
+            mPhotosArrayList = savedInstanceState.getParcelableArrayList(KEY_PHOTO_LIST);
+            setPhotoAdapter();
+        }else {
+
+            // Get new array
+            FetchPhotosTask fetchPhotosTask = new FetchPhotosTask(this);
+            fetchPhotosTask.execute("photos");
+        }
 
         mPhotosRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
         mPhotosRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
@@ -142,5 +153,12 @@ public class PhotosListActivity extends AppCompatActivity {
 
             return mPhotos.size();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(KEY_PHOTO_LIST, mPhotosArrayList);
     }
 }
