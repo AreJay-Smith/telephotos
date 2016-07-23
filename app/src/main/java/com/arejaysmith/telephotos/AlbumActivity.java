@@ -26,6 +26,8 @@ public class AlbumActivity extends AppCompatActivity {
     private RecyclerView mAlbumRecyclerView;
     private Context mContext;
     private AlbumAdapter mAlbumAdapter;
+    private String KEY_USER_ID = "userId";
+    private int mUserIdSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +36,12 @@ public class AlbumActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         User mUser = getIntent().getParcelableExtra("user");
         setTitle(mUser.getName() + "'s Albums");
+        if (savedInstanceState != null) {
+
+            mUserIdSelected = savedInstanceState.getInt(KEY_USER_ID, 0);
+        }
 
         if(isNetworkAvailable()) {
 
@@ -79,12 +84,20 @@ public class AlbumActivity extends AppCompatActivity {
     public void getAlbumData(ArrayList<Album> albumDataList){
 
         User mUser = getIntent().getParcelableExtra("user");
+        int userIdSelected;
+
+        if (mUserIdSelected != 0) {
+
+            userIdSelected = mUserIdSelected;
+        }else{
+            userIdSelected = mUser.getId();
+        }
 
         for (int i = 0; i < albumDataList.size(); i++) {
 
             Album currentAlbum = albumDataList.get(i);
 
-            if (mUser.getId() == currentAlbum.getUserId()) {
+            if (currentAlbum.getUserId() == userIdSelected) {
 
                 mAlbumList.add(currentAlbum);
             }
@@ -144,4 +157,12 @@ public class AlbumActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        User mUser = getIntent().getParcelableExtra("user");
+        outState.putInt(KEY_USER_ID, mUser.getId());
+
+        super.onSaveInstanceState(outState);
+    }
 }

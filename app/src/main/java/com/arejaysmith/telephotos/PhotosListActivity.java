@@ -32,7 +32,7 @@ public class PhotosListActivity extends AppCompatActivity {
     private Context mContext;
     private PhotoAdapter mPhotoAdapter;
     private int mSavedAlbumId;
-    private String KEY_PHOTO_LIST = "photo";
+    private String KEY_ALBUM_ID = "albumId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,11 @@ public class PhotosListActivity extends AppCompatActivity {
         if(savedInstanceState != null) {
 
             // If activity was destroyed, check to see if array was already made
-            mPhotosArrayList = savedInstanceState.getParcelableArrayList(KEY_PHOTO_LIST);
-            setPhotoAdapter();
-        }else {
+//            mPhotosArrayList = savedInstanceState.getParcelableArrayList(KEY_PHOTO_LIST);
+//            setPhotoAdapter();
+
+            mSavedAlbumId = savedInstanceState.getInt(KEY_ALBUM_ID, 0);
+        }
             if (isNetworkAvailable()) {
 
                 // Get new array
@@ -58,7 +60,6 @@ public class PhotosListActivity extends AppCompatActivity {
                 // TODO: create a broadcast receiver for when a connection is available
                 Toast.makeText(getApplicationContext(), "No internet connection",
                         Toast.LENGTH_LONG).show();
-            }
         }
 
         mPhotosRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
@@ -92,12 +93,21 @@ public class PhotosListActivity extends AppCompatActivity {
     public void getPhotoData(Photo[] photoData) {
 
         Album mAlbum = getIntent().getParcelableExtra("album");
+        int albumIdSelected;
+
+        if (mSavedAlbumId != 0) {
+
+            albumIdSelected = mSavedAlbumId;
+        }else{
+
+            albumIdSelected = mAlbum.getId();
+        }
 
         for (int i = 0; i < photoData.length; i++) {
 
             Photo currentPhoto = photoData[i];
 
-            if (currentPhoto.getAlbumId() == mAlbum.getId()) {
+            if (currentPhoto.getAlbumId() == albumIdSelected) {
 
                 // have to fix the urls to use https:// so erase the http:// which isn't necessary
                 String url = currentPhoto.getUrl();
@@ -172,8 +182,10 @@ public class PhotosListActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
 
-        outState.putParcelableArrayList(KEY_PHOTO_LIST, mPhotosArrayList);
+        Album mAlbum = getIntent().getParcelableExtra("album");
+        outState.putInt(KEY_ALBUM_ID, mAlbum.getId());
+
+        super.onSaveInstanceState(outState);
     }
 }
