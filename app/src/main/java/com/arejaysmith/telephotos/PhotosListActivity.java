@@ -2,6 +2,8 @@ package com.arejaysmith.telephotos;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.squareup.picasso.Picasso;
@@ -46,10 +49,16 @@ public class PhotosListActivity extends AppCompatActivity {
             mPhotosArrayList = savedInstanceState.getParcelableArrayList(KEY_PHOTO_LIST);
             setPhotoAdapter();
         }else {
+            if (isNetworkAvailable()) {
 
-            // Get new array
-            FetchPhotosTask fetchPhotosTask = new FetchPhotosTask(this);
-            fetchPhotosTask.execute("photos");
+                // Get new array
+                FetchPhotosTask fetchPhotosTask = new FetchPhotosTask(this);
+                fetchPhotosTask.execute("photos");
+            } else {
+                // TODO: create a broadcast receiver for when a connection is available
+                Toast.makeText(getApplicationContext(), "No internet connection",
+                        Toast.LENGTH_LONG).show();
+            }
         }
 
         mPhotosRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
@@ -68,10 +77,16 @@ public class PhotosListActivity extends AppCompatActivity {
                         startActivity(photoIntent);
                     }
                     @Override public void onLongItemClick(View view, int position) {
-                        // do whatever
+                        // More options
                     }
                 })
         );
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public void getPhotoData(Photo[] photoData) {

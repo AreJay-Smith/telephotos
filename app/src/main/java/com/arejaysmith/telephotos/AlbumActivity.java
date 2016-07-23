@@ -2,6 +2,8 @@ package com.arejaysmith.telephotos;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -35,8 +38,15 @@ public class AlbumActivity extends AppCompatActivity {
         User mUser = getIntent().getParcelableExtra("user");
         setTitle(mUser.getName() + "'s Albums");
 
-        FetchAlbumsTask fetchAlbumsTask = new FetchAlbumsTask(this);
-        fetchAlbumsTask.execute("albums");
+        if(isNetworkAvailable()) {
+
+            FetchAlbumsTask fetchAlbumsTask = new FetchAlbumsTask(this);
+            fetchAlbumsTask.execute("albums");
+        }else{
+            // TODO: create a broadcast receiver for when a connection is available
+            Toast.makeText(getApplicationContext(), "No internet connection",
+                    Toast.LENGTH_LONG).show();
+        }
 
         mAlbumRecyclerView = (RecyclerView) findViewById(R.id.album_recycler_view);
         mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -58,6 +68,12 @@ public class AlbumActivity extends AppCompatActivity {
                     }
                 })
         );
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public void getAlbumData(ArrayList<Album> albumDataList){

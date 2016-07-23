@@ -3,6 +3,8 @@ package com.arejaysmith.telephotos;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,8 +39,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle("Telephoto Users");
 
-        FetchUsersTask fetchUsersTask = new FetchUsersTask(this);
-        fetchUsersTask.execute("users");
+        if (isNetworkAvailable()) {
+
+            FetchUsersTask fetchUsersTask = new FetchUsersTask(this);
+            fetchUsersTask.execute("users");
+        }else{
+            // TODO: create a broadcast receiver for when a connection is available
+            Toast.makeText(getApplicationContext(), "No internet connection",
+                    Toast.LENGTH_LONG).show();
+        }
 
         mUserRecyclerView = (RecyclerView) findViewById(R.id.user_recycler_view);
         mUserRecyclerView.addOnItemTouchListener(
@@ -62,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
         mUserRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            Toast.makeText(getApplicationContext(), "You found an easter egg! You gain +5 dexterity. Congrats. This app doesn't need settings yet",
+                    Toast.LENGTH_LONG).show();
             return true;
         }
 
