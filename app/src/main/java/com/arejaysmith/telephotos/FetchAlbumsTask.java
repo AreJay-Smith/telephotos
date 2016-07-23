@@ -76,7 +76,7 @@ public class FetchAlbumsTask extends AsyncTask<String, Void, ArrayList<Album>> {
             URL url = new URL(builtUri.toString());
             Log.v(LOG_TAG + " my url is: ", url.toString());
 
-            // Create the request to MovieDatabase.org and open the connection
+            // Create the request and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();

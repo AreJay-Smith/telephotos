@@ -12,7 +12,6 @@ public class Album implements Parcelable {
     private int id;
     private String title;
 
-    Album(){}
 
     public int getUserId() {
         return userId;

@@ -3,20 +3,14 @@ package com.arejaysmith.telephotos;
 /**
  * Created by Urge_Smith on 7/21/16.
  */
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,12 +18,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Urge_Smith on 7/20/16.
@@ -46,30 +37,6 @@ public class FetchPhotosTask extends AsyncTask<String, Void, Photo[]> {
         this.outer = outer;
     }
 
-    public ArrayList<Photo> parsePhotosObject(String jsonString) throws JSONException {
-
-        ArrayList<Photo> photoList = new ArrayList<>();
-
-        JSONArray photoJsonArr = new JSONArray(jsonString);
-
-        for (int i = 0; i < photoJsonArr.length(); i++){
-
-            JSONObject currentPhoto = photoJsonArr.getJSONObject(i);
-
-            Photo photo = new Photo();
-
-            photo.setAlbumId(currentPhoto.getInt("albumId"));
-            photo.setId(currentPhoto.getInt("id"));
-            photo.setTitle(currentPhoto.getString("title"));
-            photo.setUrl(currentPhoto.getString("url"));
-            photo.setThumbnailUrl(currentPhoto.getString("thumbnailUrl"));
-
-            photoList.add(photo);
-        }
-
-        return photoList;
-    }
-
     @Override
     protected Photo[] doInBackground(String... params) {
 
@@ -77,9 +44,6 @@ public class FetchPhotosTask extends AsyncTask<String, Void, Photo[]> {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         Photo[] photoArray = new Photo[1];
-
-        // Will contain the raw JSON response as a string.
-        String jsonStr = null;
 
         try {
 
@@ -93,7 +57,7 @@ public class FetchPhotosTask extends AsyncTask<String, Void, Photo[]> {
             URL url = new URL(builtUri.toString());
             Log.v(LOG_TAG + " my url is: ", url.toString());
 
-            // Create the request to MovieDatabase.org and open the connection
+            // Create the request open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -101,7 +65,7 @@ public class FetchPhotosTask extends AsyncTask<String, Void, Photo[]> {
             // Read the input stream into a String
             InputStream inputStream = url.openStream();
 
-//            InputStream in = ...; // Obtained from HTTP client.
+
             Reader jsonReader = new InputStreamReader(inputStream, "UTF-8");
             Type collectionType = new TypeToken<Collection<Photo>>(){}.getType();
             Collection<Photo> photo = new Gson().fromJson(jsonReader, collectionType);

@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,10 +41,6 @@ public class PhotosListActivity extends AppCompatActivity {
         Album mAlbum = getIntent().getParcelableExtra("album");
         setTitle(mAlbum.getTitle());
         if(savedInstanceState != null) {
-
-            // If activity was destroyed, check to see if array was already made
-//            mPhotosArrayList = savedInstanceState.getParcelableArrayList(KEY_PHOTO_LIST);
-//            setPhotoAdapter();
 
             mSavedAlbumId = savedInstanceState.getInt(KEY_ALBUM_ID, 0);
         }
@@ -164,10 +157,6 @@ public class PhotosListActivity extends AppCompatActivity {
         public void onBindViewHolder(PhotoHolder holder, int position) {
 
             Photo photo = mPhotosArrayList.get(position);
-
-            // have to fix the urls to use https://
-//            String url = photo.getUrl();
-//            url = url.substring(7);
 
             Picasso.with(getApplicationContext()).load("https://" + photo.getUrl()).into(holder.mPhotoView);
             holder.mPhotoTitle.setText(photo.getTitle());

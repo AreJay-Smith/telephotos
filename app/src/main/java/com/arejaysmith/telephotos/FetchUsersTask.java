@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Created by Urge_Smith on 7/20/16.
@@ -77,7 +77,7 @@ public class FetchUsersTask extends AsyncTask<String, Void, ArrayList<User>> {
             URL url = new URL(builtUri.toString());
             Log.v(LOG_TAG + " my url is: ", url.toString());
 
-            // Create the request to MovieDatabase.org and open the connection
+            // Create the request and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
