@@ -1,11 +1,14 @@
 package com.arejaysmith.telephotos;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Urge_Smith on 7/21/16.
  */
-public class Photo {
+public class Photo implements Parcelable {
 
     @SerializedName("albumId")
     private int albumId;
@@ -56,5 +59,34 @@ public class Photo {
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+
+    public static final Parcelable.Creator<Photo> CREATOR = new Parcelable.Creator<Photo>() {
+        public Photo createFromParcel(Parcel source) {
+            Photo mPhoto = new Photo();
+            mPhoto.albumId = source.readInt();
+            mPhoto.id = source.readInt();
+            mPhoto.title = source.readString();
+            mPhoto.url = source.readString();
+            mPhoto.thumbnailUrl = source.readString();
+
+            return mPhoto;
+        }
+
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
+
+    public int describeContents() {
+        return 0;
+    }
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeInt(albumId);
+        parcel.writeInt(id);
+        parcel.writeString(title);
+        parcel.writeString(url);
+        parcel.writeString(thumbnailUrl);
     }
 }

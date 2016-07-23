@@ -8,13 +8,11 @@ import android.os.Parcelable;
  */
 public class Album implements Parcelable {
 
-    int userId;
-    int id;
-    String title;
+    private int userId;
+    private int id;
+    private String title;
 
-    Album(){
-
-    };
+    Album(){}
 
     public int getUserId() {
         return userId;

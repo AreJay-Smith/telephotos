@@ -1,6 +1,7 @@
 package com.arejaysmith.telephotos;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -35,12 +36,31 @@ public class PhotosListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Photos");
 
         FetchPhotosTask fetchPhotosTask = new FetchPhotosTask(this);
         fetchPhotosTask.execute("photos");
 
         mPhotosRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
         mPhotosRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
+        mPhotosRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(mContext, mPhotosRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+
+                        Context context = getApplicationContext();
+
+                        Photo selectedPhoto = mPhotosArrayList.get(position);
+                        Intent photoIntent = new Intent(context, PhotoActivity.class);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putParcelable("photo", selectedPhoto);
+                        photoIntent.putExtras(mBundle);
+                        startActivity(photoIntent);
+                    }
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
     }
 
     public void getPhotoData(Photo[] photoData) {
@@ -53,6 +73,11 @@ public class PhotosListActivity extends AppCompatActivity {
 
             if (currentPhoto.getAlbumId() == mAlbum.getId()) {
 
+                // have to fix the urls to use https:// so erase the http:// which isn't necessary
+                String url = currentPhoto.getUrl();
+                url = url.substring(7);
+
+                currentPhoto.setUrl(url);
                 mPhotosArrayList.add(currentPhoto);
             }
         }
@@ -105,10 +130,10 @@ public class PhotosListActivity extends AppCompatActivity {
             Photo photo = mPhotosArrayList.get(position);
 
             // have to fix the urls to use https://
-            String url = photo.getUrl();
-            url = url.substring(7);
+//            String url = photo.getUrl();
+//            url = url.substring(7);
 
-            Picasso.with(getApplicationContext()).load("https://" + url).into(holder.mPhotoView);
+            Picasso.with(getApplicationContext()).load("https://" + photo.getUrl()).into(holder.mPhotoView);
             holder.mPhotoTitle.setText(photo.getTitle());
         }
 
